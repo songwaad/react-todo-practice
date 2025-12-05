@@ -2,8 +2,8 @@ import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 import { useForm, type SubmitHandler } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useNavigate } from "react-router";
 import { apiRegister } from "@/api/auth";
@@ -16,25 +16,28 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
 //สร้าง Schema สำหรับ validate account
-const signUpFormSchema = yup.object().shape({
-  username: yup.string().required("This field is required."),
-  password: yup.string()
-    .required("This field is required.")
+const signUpFormSchema = z.object({
+  username: z.string()
+    .min(3, "Username must be at least 3 characters long.")
+    .regex(/^[A-Za-z]/, "Username must start with a letter (A-Z or a-z)."),
+  password: z.string()
     .min(6, "Password must be at least 6 characters long."),
-  confirmPassword: yup.string()
-    .oneOf([yup.ref('password')], 'Passwords must match')
-    .required("This field is required.")
+  confirmPassword: z.string()
     .min(6, "Password must be at least 6 characters long."),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords must match",
+  path: ["confirmPassword"],
 });
 
 function SignUpPage() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const registerForm = useForm<{ username: string; password: string; confirmPassword: string }>({
-    resolver: yupResolver(signUpFormSchema),
+    resolver: zodResolver(signUpFormSchema),
     mode: "onBlur",
     defaultValues: {
       username: "username",
@@ -118,13 +121,13 @@ function SignUpPage() {
                       <FormLabel> Confirm Password </FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input type={showPassword ? "text" : "password"} placeholder="Confirm Password" {...field} />
+                          <Input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm Password" {...field} />
                           <button
                             type="button"
-                            onClick={() => setShowPassword(!showPassword)}
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer hover:opacity-80"
                           >
-                          {showPassword ? (
+                          {showConfirmPassword ? (
                             <EyeOffIcon size={18} strokeWidth={0.7} />
                           ) : (
                             <EyeIcon size={18} strokeWidth={0.7} />

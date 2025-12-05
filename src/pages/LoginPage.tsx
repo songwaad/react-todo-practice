@@ -3,8 +3,8 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 import { useNavigate } from "react-router";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useAuth } from "@/hooks/useAuth";
 
@@ -16,9 +16,11 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
 //สร้าง Schema สำหรับ validate account
-const loginFormSchema = yup.object().shape({
-  username: yup.string().required("This field is required."),
-  password: yup.string().required("This field is required."),
+const loginFormSchema = z.object({
+  username: z.string()
+    .min(3, "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร")
+    .regex(/^[A-Za-z]/, "ชื่อผู้ใช้ต้องขึ้นต้นด้วยตัวอักษร A-Z หรือ a-z เท่านั้น"),
+  password: z.string().min(1, "This field is required."),
 });
 
 function LoginPage() {
@@ -29,7 +31,7 @@ function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const loginForm = useForm<{ username: string; password: string }>({
-    resolver: yupResolver(loginFormSchema),
+    resolver: zodResolver(loginFormSchema),
     mode: "onBlur",
     defaultValues: {
       username: "json",
