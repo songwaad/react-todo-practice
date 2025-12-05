@@ -8,26 +8,35 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router";
 import { apiRegister } from "@/api/auth";
 
-import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 import "../App.css";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { Card, CardContent } from "@/components/ui/card";
 
-//สร้าง Schema สำหรับ validate account
-const signUpFormSchema = z.object({
-  username: z.string()
-    .regex(/^[A-Za-z]/, "Username must start with a letter (A-Z or a-z).")
-    .min(3, "Username must be at least 3 characters long."),
-  password: z.string()
-    .min(6, "Password must be at least 6 characters long."),
-  confirmPassword: z.string()
-    .min(6, "Password must be at least 6 characters long."),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords must match",
-  path: ["confirmPassword"],
-});
+const signUpFormSchema = z
+  .object({
+    username: z
+      .string()
+      .regex(/^[A-Za-z]/, "Username must start with a letter (A-Z or a-z).")
+      .min(3, "Username must be at least 3 characters long."),
+    password: z.string().min(6, "Password must be at least 6 characters long."),
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters long."),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"],
+  });
 
 function SignUpPage() {
   const navigate = useNavigate();
@@ -36,18 +45,23 @@ function SignUpPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const registerForm = useForm<{ username: string; password: string; confirmPassword: string }>({
+  const registerForm = useForm<{
+    username: string;
+    password: string;
+    confirmPassword: string;
+  }>({
     resolver: zodResolver(signUpFormSchema),
     mode: "onBlur",
     defaultValues: {
       username: "username",
       password: "password",
       confirmPassword: "password",
-    }
+    },
   });
-  const onSubmit: SubmitHandler<{ username: string; password: string }> = async (
-    data
-  ) => {
+  const onSubmit: SubmitHandler<{
+    username: string;
+    password: string;
+  }> = async (data) => {
     setIsLoading(true);
 
     const res = await apiRegister(data.username, data.password);
@@ -62,9 +76,10 @@ function SignUpPage() {
 
   return (
     <>
-
-        <div className="flex items-center justify-center h-screen">
-          <div className="flex w-lg py-14 border rounded-3xl items-center">
+      <div className="flex items-center justify-center h-screen">
+        <Card className="w-full max-w-sm">
+          <CardContent>
+            {/* <div className="flex w-lg py-14 border rounded-3xl items-center"> */}
 
             {/* FORM */}
             <Form {...registerForm}>
@@ -86,7 +101,7 @@ function SignUpPage() {
                   )}
                 />
 
-                <FormField 
+                <FormField
                   control={registerForm.control}
                   name="password"
                   render={({ field }) => (
@@ -94,17 +109,21 @@ function SignUpPage() {
                       <FormLabel> Password </FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input type={showPassword ? "text" : "password"} placeholder="Password" {...field} />
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            {...field}
+                          />
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer hover:opacity-80"
+                            className="absolute right-2 top-1/2 transform -translate-y-1/2 hover:opacity-80 cursor-pointer"
                           >
-                          {showPassword ? (
-                            <EyeOffIcon size={18} strokeWidth={0.7} />
-                          ) : (
-                            <EyeIcon size={18} strokeWidth={0.7} />
-                          )}
+                            {showPassword ? (
+                              <EyeOffIcon size={18} strokeWidth={0.7} />
+                            ) : (
+                              <EyeIcon size={18} strokeWidth={0.7} />
+                            )}
                           </button>
                         </div>
                       </FormControl>
@@ -113,7 +132,7 @@ function SignUpPage() {
                   )}
                 />
 
-                <FormField 
+                <FormField
                   control={registerForm.control}
                   name="confirmPassword"
                   render={({ field }) => (
@@ -121,17 +140,23 @@ function SignUpPage() {
                       <FormLabel> Confirm Password </FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm Password" {...field} />
+                          <Input
+                            type={showConfirmPassword ? "text" : "password"}
+                            placeholder="Confirm Password"
+                            {...field}
+                          />
                           <button
                             type="button"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer hover:opacity-80"
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                            className="absolute right-2 top-1/2 transform -translate-y-1/2 hover:opacity-80 cursor-pointer"
                           >
-                          {showConfirmPassword ? (
-                            <EyeOffIcon size={18} strokeWidth={0.7} />
-                          ) : (
-                            <EyeIcon size={18} strokeWidth={0.7} />
-                          )}
+                            {showConfirmPassword ? (
+                              <EyeOffIcon size={18} strokeWidth={0.7} />
+                            ) : (
+                              <EyeIcon size={18} strokeWidth={0.7} />
+                            )}
                           </button>
                         </div>
                       </FormControl>
@@ -141,7 +166,7 @@ function SignUpPage() {
                 />
 
                 <div className="grid w-full max-w-sm items-center gap-3 pt-4">
-                  <Button type="submit" className="cursor-pointer w-full">
+                  <Button type="submit" className="w-full">
                     {isLoading ? (
                       <>
                         <Spinner /> Loading...
@@ -162,9 +187,10 @@ function SignUpPage() {
                 </div>
               </form>
             </Form>
-
-          </div>
-        </div>
+          </CardContent>
+        </Card>
+        {/* </div> */}
+      </div>
     </>
   );
 }

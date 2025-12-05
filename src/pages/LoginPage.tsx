@@ -104,7 +104,7 @@ function LoginPage() {
                           <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer hover:opacity-80"
+                            className="absolute right-2 top-1/2 transform -translate-y-1/2 hover:opacity-80 cursor-pointer"
                           >
                           {showPassword ? (
                             <EyeOffIcon size={18} strokeWidth={0.7} />
