@@ -28,7 +28,7 @@ export async function apiMe(signal?: AbortSignal): Promise<ApiResponse<{ user: A
         const res = await api.get("/user", { signal });
         const user: AuthUser = res.data.data;
         
-        if(!user.ok) {
+        if(!user) {
             return {
                 ok: false,
                 error: msg,
@@ -82,7 +82,7 @@ export async function apiLogout(): Promise<ApiResponse<null>> {
 
 export async function apiRegister(username: string, password: string): Promise<ApiResponse<null>> {
     try {
-        await api.post("/register", { username, password });
+        await api.post("/users", { username, password });
         return {
             ok: true,
             data: null,
