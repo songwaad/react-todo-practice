@@ -17,9 +17,7 @@ import { Spinner } from "@/components/ui/spinner";
 
 //สร้าง Schema สำหรับ validate account
 const loginFormSchema = z.object({
-  username: z.string()
-    .min(3, "Username must be at least 3 characters long.")
-    .regex(/^[A-Za-z]/, "Username must start with a letter (A-Z or a-z)."),
+  username: z.string().min(1, "This field is required."),
   password: z.string().min(1, "This field is required."),
 });
 
