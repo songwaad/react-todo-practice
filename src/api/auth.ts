@@ -31,7 +31,7 @@ export async function apiMe(signal?: AbortSignal): Promise<ApiResponse<{ user: A
         if(!user) {
             return {
                 ok: false,
-                error: msg,
+                error: "No authenticated user found.",
             };
         }
 
@@ -39,8 +39,9 @@ export async function apiMe(signal?: AbortSignal): Promise<ApiResponse<{ user: A
             ok: true,
             data: { user,},
         }
+        
     } catch (error) {
-        const err = error as AxiosError;
+        const err = error as AxiosError<{ message?: string }>;
         const msg = err.response?.data?.message ?? `Failed to fetch user: ${err.response?.status ?? 'Network Error'}`;
         return {
             ok: false,

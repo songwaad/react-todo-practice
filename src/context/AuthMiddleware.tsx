@@ -26,7 +26,7 @@ export const AuthMiddleware: React.FC<{ children: React.ReactNode }> = ({ childr
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Spinner /> Loading...
+        <Spinner className="size-8"/>
       </div>
     );
   }
